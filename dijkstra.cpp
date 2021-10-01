@@ -37,17 +37,17 @@ void dijkstra(int graph[V][V], int src)
 	int dist[V];
 	bool spt[V];
 
-	for(int i = 0; i<V; i++){
+	for(int i = 0; i<V; i++){ //Initialize
 		dist[i] = INT_MAX;
-		spt[i] = true;
+		spt[i] = false;
 	}
 
-	dist[src] = 0;
+	dist[src] = 0; //Start at src node
 	for(int j = 0; j<V-1; j++){
 		int u = minDistance(dist, spt);
 		spt[u] = true;
 		for(int v = 0; v<V; v++){
-			if(!spt[v] && graph[u][v] && dist[u]!=INT_MAX && dist[u] + graph[u][v] < dist[v]){
+			if(!spt[v] && graph[u][v] && dist[u]!=INT_MAX && dist[u] + graph[u][v] < dist[v]){ //Not already included, edge exists, distance + new edge < already included distance
 				dist[v] = dist[u]+graph[u][v];
 			}
 		}

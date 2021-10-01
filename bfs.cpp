@@ -144,8 +144,11 @@ void AdjListBFS(vector< vector<int> > adjList, int start)
     
     int n = adjList.size();
     // Create a "visited" array (true or false) to keep track of if we visited a vertex.
-    bool visited[n] = { false };
+    bool visited[n];
     
+    for(int i = 0; i<n; i++){
+        visited[i]=false;
+    }
     // Create a queue for the nodes we visit.
     queue<int> q;
     
@@ -187,8 +190,11 @@ void AdjMatrixBFS(vector< vector<int> > adjMatrix, int start)
     
     int n = adjMatrix.size();
     // Create a "visited" array (true or false) to keep track of if we visited a vertex.
-    bool visited[n] = { false };
+    bool visited[n];
     
+    for(int i = 0; i<n; i++){
+        visited[i]=false;
+    }
     // Create a queue for the nodes we visit.
     queue<int> q;
     
@@ -227,7 +233,77 @@ void AdjMatrixBFS(vector< vector<int> > adjMatrix, int start)
     cout << endl << endl;
     return;
     }
+
+bool shortestPathBFS(vector< vector<int> > adj, int start, int end, int predecessor[], int dist[]){
+    int n = adj.size();
+    bool visited[n];
+
+    for(int i = 0; i<n; i++){
+        visited[i] = false;
+        predecessor[i] = -1;
+        dist[i] = INT_MAX;
+    }
+
+    queue<int> q;
+
+    visited[start] = true;
+    dist[start] = 0;
     
+    q.push(start);
+
+    while(!q.empty()){
+        int u = q.front();
+        q.pop();
+        for(int i = 0; i<adj[u].size();i++){
+            int neighbor = adj[u][i]; //Adjacent node
+            if(visited[neighbor] == false)
+                {
+                q.push(neighbor); //Add on to queue
+                visited[neighbor] = true; //Set the neighbor as visited
+                dist[neighbor] = dist[u] + 1; //Each adjacent neighbor gets parent plus 1
+                predecessor[neighbor] = u; //Each i stores immediate predecessor
+                }
+            if(neighbor == end){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void printShortestDistance(vector<vector<int> > adj, int s, int dest)
+{
+    // predecessor[i] array stores predecessor of
+    // i and distance array stores distance of i
+    // from s
+    int v = adj.size();
+    int pred[v], dist[v];
+ 
+    if (shortestPathBFS(adj, s, dest, pred, dist) == false) {
+        cout << "Given source and destination"
+             << " are not connected";
+        return;
+    }
+ 
+    // vector path stores the shortest path
+    vector<int> path;
+    int crawl = dest;
+    path.push_back(crawl);
+    while (pred[crawl] != -1) {
+        path.push_back(pred[crawl]); //Each pred has a value corresponding to predecessor
+        crawl = pred[crawl]; //Move to predeecessor
+    }
+ 
+    // distance from source is in distance array
+    cout << "Shortest path length is : "
+         << dist[dest];
+ 
+    // printing path from source to destination
+    cout << "\nPath is::\n";
+    for (int i = path.size() - 1; i >= 0; i--)
+        cout << path[i] << " ";
+}
+
 int main() 
     {
     cout << "Program started.\n";
@@ -239,8 +315,8 @@ int main()
     // Call BFS on Vertex 5. (Labeled as 4 in our 0-based-indexing.)
     AdjListBFS(adjList, 4);
     AdjMatrixBFS(adjMatrix, 4);
-    
+    printShortestDistance(adjList, 4, 8);
     cout << "Program ended.\n";
-    
+
     return 0;
     }
